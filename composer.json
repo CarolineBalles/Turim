@@ -1,0 +1,20 @@
+{
+    "name": "carolineballes/turim",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Caroline R. Balles",
+            "email": "caroline.ribeiro.balles@gmail.com"
+        }
+    ],
+    "require": {
+        "slim/slim": "^4.10",
+        "slim/psr7": "^1.5",
+        "rain/raintpl": "^3.1"
+    }
+}
