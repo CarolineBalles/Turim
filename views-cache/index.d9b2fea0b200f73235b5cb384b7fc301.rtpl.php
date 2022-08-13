@@ -1,4 +1,4 @@
-
+<?php if(!class_exists('Rain\Tpl')){exit;}?>
         <div class="container">
             <div class="row">
                 <div class="col mt-2">
