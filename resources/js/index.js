@@ -29,7 +29,6 @@ const createObj = (users) => {
     let dbPeople = getLocalStorage();
     dbPeople.push(users);
     setLocalStorage(dbPeople);
-    dbPeople = getLocalStorage();
     showObj(dbPeople);
 }
 
@@ -39,16 +38,16 @@ const updateObj = (index, users) => {
     let dbPeople = readObj();
     dbPeople[index] = users;
     setLocalStorage(dbPeople);
-    dbPeople = getLocalStorage();
     showObj(dbPeople);
 } 
 
 const deleteObj = (index) => {
     let dbPeople = readObj();
+    console.log(Object.keys(dbPeople))
     dbPeople.splice(index,1);
     setLocalStorage(dbPeople);
-    dbPeople = getLocalStorage();
     showObj(dbPeople);
+    removeElement(index);
 }
 
 const include = () => {
@@ -61,9 +60,13 @@ const createElement = (element) => {
     return document.createElement(element);
 }
 
+const removeElement = (index) => {
+    document.getElementById(index).remove();
+}
+
 const showObj = (dbPeople) => {
-    localStorage.setItem("db_people", JSON.stringify(dbPeople));
-    let showObj = document.querySelector("#people").innerHTML = dbPeople;
+    dbPeople = localStorage.getItem("db_people", JSON.stringify(dbPeople));
+    document.querySelector("#people").innerHTML = dbPeople;
 }
 
 const createTable = (input_name) => {
@@ -75,7 +78,7 @@ const createTable = (input_name) => {
     table.appendChild(thead);
     
     let tr_head = createElement("tr");
-    let index_th = ["Nome", "Editar", "Excluir"];
+    let index_th = ["Nome", "Excluir"];
     for(let i = 0; i < index_th.length; i++){
         let th_head = createElement("th");
         th_head.textContent = index_th[i];
@@ -105,6 +108,8 @@ const createTable = (input_name) => {
 }
 
 const createTr = (input_name) => {
+    dbPeople = getLocalStorage();
+
     let tbody = createElement("tbody");
     let tr_body = createElement("tr");
     
@@ -115,17 +120,14 @@ const createTr = (input_name) => {
     td_body_name.setAttribute("id", input_name);
     tr_body.appendChild(td_body_name);
 
-    let td_body_pencil = createElement("td");
-    let pencil = createElement("i");
-    pencil.classList = "bi-pencil-square";
-    pencil = pencil;
-    tr_body.appendChild(td_body_pencil);
-    td_body_pencil.appendChild(pencil);
-
     let td_body_trash = createElement("td");
     let trash = createElement("i");
     trash.classList = "bi bi-trash-fill";
     trash = trash;
+    tr_body.setAttribute("id", dbPeople.length);
+    let i = dbPeople.length;
+    td_body_trash.onclick=function(){deleteObj(i)};
+
     tr_body.appendChild(td_body_trash);
     td_body_trash.appendChild(trash);
 
