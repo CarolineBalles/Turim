@@ -24,12 +24,15 @@ const createChildren = (people, children) => {
 
 const getLocalStorage = () => JSON.parse(localStorage.getItem('db_people')) ?? []; 
 const setLocalStorage = (dbPeople) => localStorage.setItem("db_people", JSON.stringify(dbPeople));
+const getLocalStorageString = (dbPeople) => localStorage.getItem("db_people", JSON.stringify(dbPeople));
 
 const createObj = (users) => {
     let dbPeople = getLocalStorage();
     dbPeople.push(users);
     setLocalStorage(dbPeople);
     showObj(dbPeople);
+    //let teste = getLocalStorageString(dbPeople)
+    //console.log(typeof(teste));
 }
 
 let readObj = () => getLocalStorage();
@@ -43,7 +46,6 @@ const updateObj = (index, users) => {
 
 const deleteObj = (index) => {
     let dbPeople = readObj();
-    console.log(Object.keys(dbPeople))
     dbPeople.splice(index,1);
     setLocalStorage(dbPeople);
     showObj(dbPeople);
@@ -65,7 +67,7 @@ const removeElement = (index) => {
 }
 
 const showObj = (dbPeople) => {
-    dbPeople = localStorage.getItem("db_people", JSON.stringify(dbPeople));
+    dbPeople = getLocalStorageString(dbPeople);
     document.querySelector("#people").innerHTML = dbPeople;
 }
 
@@ -141,4 +143,20 @@ const insertChildren = (input_people) => {
         createChildren(input_people, input_children);
         return tr_body;
     }
+}
+
+const save = () => {
+    let dbPeople = getLocalStorageString();
+    console.log(dbPeople);
+    $.ajax({
+        url: '/',
+        type: 'POST',
+        data: {data: dbPeople},
+        success: function(result){
+          console.log(result);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log(jqXHR, textStatus, errorThrown);
+        }
+    });
 }

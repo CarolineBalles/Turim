@@ -5,7 +5,7 @@
             <article>
                 <div class="row">
                     <div class="col mt-2">
-                        <button type="button" class="btn btn-success" id="record">Gravar</button>
+                        <button type="button" class="btn btn-success" id="record" onclick="save()">Gravar</button>
                         <button type="button" class="btn btn-primary" id="read">Ler</button>
                     </div>
                 </div>
