@@ -1,4 +1,4 @@
-        <div class="container">
+<?php if(!class_exists('Rain\Tpl')){exit;}?>        <div class="container">
             <header class="p-3 mb-2 bg-warning text-dark">
                 <center><h1>Cadastro de Pessoas</h1></center>
             </header>
