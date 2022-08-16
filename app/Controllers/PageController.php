@@ -16,10 +16,6 @@ class PageController {
     {
         $this->options = array_merge($this->defaults, $opts);
 
-        //$path = $_SERVER["DOCUMENT_ROOT"]; //dirname(__FILE__,3).DIRECTORY_SEPARATOR.'resources'.DIRECTORY_SEPARATOR.'views';
-        //var_dump($path);
-        //die();
-
         $config = array(
             "tpl_dir" => $_SERVER["DOCUMENT_ROOT"].$tpl_dir,
             "cache_dir" => $_SERVER["DOCUMENT_ROOT"]."/views-cache/",

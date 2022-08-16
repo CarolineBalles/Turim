@@ -9,7 +9,7 @@ function getElementDom(element) {
 const db = []
 
 function addFather(name) {
-    const nameFather = getElementDom('#input_father')
+    const nameFather = getElementDom('#input_people')
     if(!nameFather.value) return
     const father = {
         name: nameFather.value,
@@ -38,7 +38,7 @@ function createTable(db) {
         table.appendChild(createElement('button', 'Adicionar filho', {id: 2, class:'_btn', value: index, onclick:'addChildren(value)'}))
         table_container.appendChild(table)
     })
-    getElementDom('#everybody').value = db.length?JSON.stringify(db):''
+    getElementDom('#people').value = db.length?JSON.stringify(db):''
 }
 function addChildren(value) {
     const children = prompt('Nome do filho')
@@ -65,85 +65,53 @@ function deleteRow(_id) {
     }
     createTable(db)
 }
+function sendDb (){
+    $(document).ready(function () {
 
-const fathers = []
-const children = []
-
-function sendDb(){
-    for(let i = 0; i < db.length; i++){
-        let iFather = i;
-        let id = i
-        let fatherId = ++id
-        let fatherName = db[i].name
-        let count_children = db[i].children.length
-        fathers.push({id: fatherId, name: fatherName})
-        for(let i = 0; i < count_children; i++){
-            id = i
-            let childrenId = ++id
-            let childrenFatherId = fatherId
-            let childrenName = db[iFather].children[i].name
-            children.push({id: childrenId, fatherId: childrenFatherId, name: childrenName})
-        }
-
-    }
-    for(let i = 0; i < fathers.length; i++){
-        let fatherId = fathers[i].id
-        let fatherName = fathers[i].name
+        const father_name = $("#description").val();
+        const children_name = $("#price").val();
+        const amount = $("#amount").val();
+        const client_name = $("#client_name").val();
+        const cpf = $("#cpf").val();
+        const phone_number = $("#phone_number").val();
+        const email = $("#email").val();
+        const expire_at = $("#expire_at").val();
         const payload = {
-            fatherName: fatherName
+            description: description,
+            price: price,
+            amount: amount,
+            client_name: client_name,
+            cpf: cpf,
+            phone_number: phone_number,
+            email: email,
+            expire_at: expire_at
         }
-        console.log(payload)
-    }
 
-    for(let i = 0; i < children.length; i++){
-        let childrenId = children[i].id
-        let childrenFatherId = children[i].fatherId
-        let childrenName = children[i].name
-        const payload = {
-            childrenFatherId: childrenFatherId,
-            childrenName: childrenName
-        }
-        console.log(payload)
-    }
-
-    
-}
-
-function ajax(payload){
-    $.ajax({
-        url: `/`,
-        data: payload,
-        type: "post",
-        dataType: 'json',
-        success: function (response) {
-            //console.log(response)
-            if (response) {
+        $.ajax({
+            url: `/`,
+            data: payload,
+            type: "post",
+            dataType: 'json',
+            success: function (response) {
                 console.log(response)
-            } else {
-                alert("Code: " + response)
-            }
-        },
-        error: function (response) {
-            alert("Ocorreu um erro - Mensagem: " + response.responseText)
-        }
-    })
-}
+                if (response/*.charge_id > 0*/) {
+                    alert("Response: " + response)
+                    // var html = "<th>" + response.charge_id + "</th>"
+                    // html += "<th>" + response.barcode + "</th>"
+                    // html += `<th><a target="_blank" href="${response.link}">${response.link}</a></th>`
+                    // html += "<th>" + response.expire_at + "</th>"
+                    // html += "<th>" + response.status + "</th>"
+                    // html += "<th>" + response.price + "</th>"
+                    // html += "<th>" + response.payment + "</th>";
+                    // $("#result_table").html(html);
 
-function readDb(){
-    console.log("readDb")
-    $.ajax({
-        url: `/`,
-        success: function (response) {
-            console.log(response)
-            if (response) {
-                console.log(response)
-                $("#everybody").html(response);
-            } else{
-                alert("Code: " + response)
+                } else {
+                    alert("Code: " + response)
+                }
+            },
+            error: function (response) {
+                alert("Ocorreu um erro - Mensagem: " + response.responseText)
             }
-        },
-        error: function (response) {
-            alert("Ocorreu um erro - Mensagem: " + response.responseText)
-        }
+        });
     })
 }
