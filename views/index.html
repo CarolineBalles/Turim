@@ -23,7 +23,7 @@
                 <div class="row">
                     <div class="col">
                         <h1>Pessoas</h1>
-                        <div class= "col table_container"></div>
+                        <div class= "col table_container" id="table"></div>
                     </div>
                     <div class="col mt-3">
                         <textarea class="form-control" name="everybody" id="everybody" cols="30" rows="20"></textarea>

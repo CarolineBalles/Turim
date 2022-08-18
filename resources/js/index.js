@@ -1,4 +1,4 @@
-function getElementDom(element) {
+const getElementDom = (element) => {
     elementList = document.querySelectorAll(element)
     if (elementList.length > 1) {
         return elementList
@@ -8,7 +8,7 @@ function getElementDom(element) {
 }
 const db = []
 
-function addFather(name) {
+const addFather = (name) => {
     const nameFather = getElementDom('#input_father')
     if(!nameFather.value) return
     const father = {
@@ -20,7 +20,7 @@ function addFather(name) {
     nameFather.value = ''
     createTable(db)
 }
-function createTable(db) {
+const createTable = (db) => {
     const table_container = getElementDom('.table_container')
     table_container.innerHTML = ''
     db.map((f, index) => {
@@ -40,14 +40,14 @@ function createTable(db) {
     })
     getElementDom('#everybody').value = db.length?JSON.stringify(db):''
 }
-function addChildren(value) {
+const addChildren = (value) => {
     const children = prompt('Nome do filho')
     if(!children) return
     db[value].children.push({name: children})
     createTable(db)
 }
 
-function createElement(tag, innerHTML, attributes){
+const createElement = (tag, innerHTML, attributes) => {
     const element = document.createElement(tag)
     for(const att in attributes){
         element.setAttribute(att,attributes[att] )
@@ -55,7 +55,7 @@ function createElement(tag, innerHTML, attributes){
     element.innerHTML = innerHTML
     return element
 }
-function deleteRow(_id) {
+const deleteRow = (_id) => {
     const id = _id.split('_')
     if(id[0] === 'spnTb'){
         db.splice(id[1], 1)
@@ -69,54 +69,50 @@ function deleteRow(_id) {
 const fathers = []
 const children = []
 
-function sendDb(){
-    for(let i = 0; i < db.length; i++){
-        let iFather = i;
+const sendDb = () => {
+    db.map((f, i) => {
         let id = i
         let fatherId = ++id
-        let fatherName = db[i].name
-        let count_children = db[i].children.length
+        let fatherName = f.name
         fathers.push({id: fatherId, name: fatherName})
-        for(let i = 0; i < count_children; i++){
-            id = i
+        f.children.map((c, ind) => {
+            let id = ind
             let childrenId = ++id
             let childrenFatherId = fatherId
-            let childrenName = db[iFather].children[i].name
+            let childrenName = c.name
             children.push({id: childrenId, fatherId: childrenFatherId, name: childrenName})
-        }
+        })
+    })
 
-    }
-    for(let i = 0; i < fathers.length; i++){
-        let fatherId = fathers[i].id
-        let fatherName = fathers[i].name
+    fathers.map((f, i) => {
+        let fatherId = f.id
+        let fatherName = f.name
         const payload = {
             fatherName: fatherName
         }
-        console.log(payload)
-    }
+        ajax(payload)
+    })
 
-    for(let i = 0; i < children.length; i++){
-        let childrenId = children[i].id
-        let childrenFatherId = children[i].fatherId
-        let childrenName = children[i].name
+    children.map((c, i) => {
+        let childrenId = c.id
+        let childrenFatherId = c.fatherId
+        let childrenName = c.name
         const payload = {
             childrenFatherId: childrenFatherId,
             childrenName: childrenName
         }
-        console.log(payload)
-    }
-
-    
+        ajax(payload)
+    })
 }
 
-function ajax(payload){
+const ajax = (payload) => {
+
     $.ajax({
         url: `/`,
         data: payload,
         type: "post",
-        dataType: 'json',
+        // dataType: 'json',
         success: function (response) {
-            //console.log(response)
             if (response) {
                 console.log(response)
             } else {
@@ -129,18 +125,26 @@ function ajax(payload){
     })
 }
 
-function readDb(){
-    console.log("readDb")
+const readDb = () => {
     $.ajax({
-        url: `/`,
+        url: `/read`,
+        //data: payload,
+        type: "post",
+        //dataType: 'json',
         success: function (response) {
-            console.log(response)
-            if (response) {
-                console.log(response)
-                $("#everybody").html(response);
-            } else{
+            let html = ''
+            if(response.fatherName){
+                html = "<th>" + response.fatherName + "</th>"
+                $("#table").html(html)
+                $("#everybody").html(response)
+            }else if(response.childrenFatherId){
+                html += "<th>" + response.childrenFatherId + "</th>"
+                html += "<th>" + response.childrenName + "</th>"
+                $("#table").html(html)
+                $("#everybody").html(response)
+            }else{
                 alert("Code: " + response)
-            }
+            }            
         },
         error: function (response) {
             alert("Ocorreu um erro - Mensagem: " + response.responseText)

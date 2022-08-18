@@ -9,6 +9,6 @@ CREATE TABLE `father` (
 DROP TABLE IF EXISTS `children`;
 CREATE TABLE `children` (
 	id INT auto_increment PRIMARY KEY,
-	`father_id` varchar(50) NOT NULL,
+	`father_id` INT NOT NULL,
     `name` varchar(50) NOT NULL
 );
