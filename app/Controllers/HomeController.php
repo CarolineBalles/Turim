@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Controllers\PageController;
 use App\Controllers\Model\PeopleController;
 use App\Controllers\DB\SqlController;
+use Slim\Logger;
 
 class HomeController{
 
@@ -17,26 +18,42 @@ class HomeController{
 
     public function store(Request $request, Response $response, $args)
     {
-        $people = new PeopleController();
-        $people->setData($_POST);
-        var_dump($people);
-        //$people->save();
+        $contentType = $request->getHeaderLine('Content-Type');
+
+        if (strstr($contentType, 'application/json')) {
+            $contents = json_decode(file_get_contents('php://input'), true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $request = $request->withParsedBody($contents);
+            }
+        }
         
-        return $response;
+        $json = $request->getParsedBody();
+        $people = new PeopleController();
+        $json_response = array();
+
+        foreach($json as $father) {
+            $newFather = $people->insertFather($father);
+            foreach ($father['children'] as $children) {
+                $newChildren = $children;
+                $newChildren['father_id'] = $newFather['id'];
+                $newChildren = $people->insertChildren($newChildren);
+            }
+            $newFather['children'] = $people->listRelatedChildrens($newFather['id']);
+           array_push($json_response, $newFather);
+        }
+
+        $payload = json_encode($json_response);
+        $response->getBody()->write($payload);
+        return $response->withHeader('Content-Type', 'application/json');
     }
 
     public function readDb(Request $request, Response $response, $args)
     {
-        //$page = new PageController();
         $people = new PeopleController();
-        $result = $people->listAll();
-        var_dump($result);
-        
-        // $page->setTpl("index", array(
-        //     "fathers" => $fathers,
-        //     "children" => $children
-        // ));
-        return $response;
+        $result = $people->listRelationAll();
+        $payload = json_encode($result);
+        $response->getBody()->write($payload);
+        return $response->withHeader('Content-Type', 'application/json');
     }
 }
 
