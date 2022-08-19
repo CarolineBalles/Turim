@@ -65,9 +65,6 @@ const deleteRow = (_id) => {
     createTable(db)
 }
 
-const fathers = []
-const children = []
-
 const sendDb = () => {
     const payload = db.map((father, i) => {
         const id = ++i

@@ -5,8 +5,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Controllers\PageController;
 use App\Controllers\Model\PeopleController;
-use App\Controllers\DB\SqlController;
-use Slim\Logger;
 
 class HomeController{
 
